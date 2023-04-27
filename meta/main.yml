@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: Adam
+  description: VirtualBox - Open source type 2 hypervisor
+  license: MIT
+  company: none
+  min_ansible_version: 2.7
+  platforms:
+    - name: Debian
+      versions:
+        - bullseye
+  galaxy_tags:
+  - virtualbox
+  - vm
+  - hypervisor
+
+dependencies: []
