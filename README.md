@@ -9,7 +9,7 @@ does not require you have SSH running.
 - hosts: localhost
   connection: local
   roles:
-    - role: hax0rbana-adam.virtualbox
+    - role: hax0rbana_adam.virtualbox
 ```
 
 # Official repo location
@@ -28,7 +28,7 @@ up for another account.
 
 ## Fediverse
 If you prefer the Fediverse to Matrix, you can find the primary author of this
-package at: @adam@hax0rbana.social
+package at: `@adam@hax0rbana.social`
 
 # Contributing
 See [contributor guidelines](CONTRIBUTING.md).
