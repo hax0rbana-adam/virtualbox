@@ -1,0 +1,43 @@
+# Instructions taken from https://www.virtualbox.org/wiki/Linux_Downloads
+- name: Checking to see if key is already present
+  ansible.builtin.stat:
+    path: /usr/share/keyrings/oracle-virtualbox-2016.gpg
+  register: keyring
+
+- name: Download repo signing key
+  ansible.builtin.get_url:
+    checksum: sha256:49e6801d45f6536232c11be6cdb43fa8e0198538d29d1075a7e10165e1fbafe2
+    url: https://www.virtualbox.org/download/oracle_vbox_2016.asc
+    dest: /tmp/virtualbox-keyring.asc
+    mode: '644'
+  when: "ansible_os_family == 'Debian' and not keyring.stat.exists"
+
+- name: Install gpg
+  ansible.builtin.package:
+    name: gpg
+
+- name: Install repo signing key
+  ansible.builtin.shell:
+    cmd: gpg --dearmor --yes -o /usr/share/keyrings/oracle-virtualbox-2016.gpg < /tmp/virtualbox-keyring.asc
+  when: "ansible_os_family == 'Debian' and not keyring.stat.exists"
+
+- name: Clean up a temporary copy of the repo signing key
+  ansible.builtin.file:
+    path: /tmp/virtualbox-keyring.asc
+    state: absent
+
+- name: Add repo to list of sources
+  ansible.builtin.copy:
+    content: deb [arch=amd64 signed-by=/usr/share/keyrings/oracle-virtualbox-2016.gpg] https://download.virtualbox.org/virtualbox/debian {{ansible_lsb.codename}} contrib
+    dest: /etc/apt/sources.list.d/virtualbox.list
+    mode: '644'
+  when: "ansible_os_family == 'Debian'"
+
+- name: Make sure we have the latest metadata for apt
+  ansible.builtin.apt:
+    update_cache: True
+  when: ansible_os_family == "Debian"
+
+- name: Install the package
+  ansible.builtin.package:
+    name: virtualbox-7.0
